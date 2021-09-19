@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product-Preview</title>
+    <link rel="stylesheet" href="./shopelane.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
+#item-title {
+    font-size: 48px;
+    font-weight: 500;
+    margin: 0;
+}
+h3{
+  display: block;
+  font-size:1.17em;
+  margin-block-start:1em;
+  margin-block-end:1em;
+  margin-inline-start:0px;
+  margin-inline-end:0px;
+  font-weight:bold;
+}
+.brandname {
+    margin-top: 10px;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: 1px;
+    opacity:0.6;
+} 
+h3 {
+    margin-top: 20px;
+    font-weight: 200;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: rgb(27, 25, 25);
+}
+#left-section{
+  width:35%;
+  box-sizing:border-box;
+  display:inline-block;
+}
+.item-price{
+    color: #009688;
+    font-weight: bold;
+}
+#right-section p{
+  margin-top: 20px;
+    font-size: 16px;
+    font-weight: 300;
+    color: #86939e;
+}
+#img{
+  width:100%;
+}
+#right-section{
+  width:55%;
+  display:flex;
+  float:right;
+  flex-direction:column;
+}
+
+.previewimages{
+    margin: 5px;
+    width: 15%;
+    height: 30%;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+  min-width:70px;
+}
+.active {
+    border: 2px solid #009688;
+}
+#product_Section{
+  box-sizing: border-box;
+  margin-left: 5%;
+  margin-right:5%;
+}
+.product-descrip h3 {
+    margin-top: 20px;
+    font-weight: 200;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: rgb(27, 25, 25);
+}
+
+button {
+  color:white;
+  margin-top: 20px;
+  line-height: 60px;
+  font-size:1em;
+  letter-spacing:1.2px;
+  font-weight: 550;
+  padding: 0 40px;
+  background: #009688;
+  border: none;
+  border-radius: 10px;
+  max-width:320px;
+}
+
+@media screen and (max-width: 480px){
+#product_Section{
+  display:flex;
+  flex-direction:column;
+  width:90%;
+  margin-left: 5%;
+  margin-right:5%;
+}
+  #left-section{
+    width:100%;
+  }
+  #right-section{
+    width:100%;
+  }
+  #item-title {
+    font-size: 32px;
+    font-weight: 500;
+    margin: 0;
+}
+}
+    </style>
+</head>
+<body>
+  <header>
+  <nav id=nav-bar-top>
+      <div id="menu-left">
+          <div id="web-logo"><a href="./index.html"><span class="shop-bold">SHOP</span>LANE</a></div>
+          <a href="./index.html#clothing-section" class="menu">Clothing</a>
+          <a href="./index.html#accessory-section" class="menu">Accessories</a>
+      </div>
+      <div id="search-space">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-box" name="search" placeholder="Search for Clothing and Accessories ">
+      </div>
+      <div id="menu-right">
+          <div id="cart"><p id="cart-count">0</p>
+          <a href="./checkout.html"><i class="fas fa-shopping-cart" style="font-size: larger;"></i></a></div>
+          <img src="https://ws.shoutcast.com/images/contacts/6/686a/686a361e-07b2-4e63-9e29-60a0cc314e3a/radios/a59118d4-a774-4999-ad2f-a19508773a2c/a59118d4-a774-4999-ad2f-a19508773a2c.png" alt="Profile-Photo" >
+      </div>
+  </nav>
+</header>
+    <main>
+        <section id="product_Section">
+        <div id="left-section">
+          
+        </div>
+        <div id="right-section">
+        <div id="right-prod-details"></div>
+            <div id="previewImgs"></div></div>
+        </section>
+    </main>
+    <script>
+      var productid = localStorage.getItem("id")
+      
+      $.ajax({
+    type : "GET",
+    url : `https://5d76bf96515d1a0014085cf9.mockapi.io/product/${productid}`,
+    success : function(response) { 
+        dataload(response)
+        
+    },
+    error: function(request,status,errorThrown) {
+        // There's been an error, do something with it!
+     console.log(request)
+     console.log(status)
+     console.log(errorThrown)
+        // Only use status and errorThrown.
+        // Chances are request will not have anything in it.
+   }})
+
+   let fullScreen = document.getElementsByTagName("main");
+const leftHalf = document.getElementById("left-section");
+const rightHalf = document.getElementById("right-section");
+const previewdiv = document.getElementById("previewImgs");
+const righttext = document.getElementById("right-prod-details");
+
+   function dataload(data){
+    var productData = data
+    
+leftHalf.innerHTML=`<img id="img" src="${productData.preview}" alt="Product-image"/>`
+
+previewdiv.innerHTML = `<h3 class="name-preview"> Product Preview</h3>`
+
+for (i=0; i < productData.photos.length; i++){
+  let x=productData.photos[i];
+		previewdiv.innerHTML += `<img src="${x}" class="previewimages" onclick='changeImage("${x}"), marked(),
+        this.style.border = "2px solid #009688"'/>`
+}
+
+var img1 = document.getElementsByClassName("previewimages")
+img1[0].style.border = "2px solid #009688"
+
+righttext.innerHTML= `<h1 id="item-title">${productData.name} </h1>
+<h4 class= "brandname"> ${productData.brand}</p>
+<h3 > Price : Rs <span class="item-price">${productData.price}</span></h3>
+<div class="product-descrip"><h3>Description</h3>
+<p class="description"> ${productData.description}</p></div>`
+   }
+   $("<button type='button' onClick='addhere()'>ADD TO CART</button>").appendTo(rightHalf)
+
+function marked(){
+ var m= document.getElementsByClassName("previewimages")
+  for(j=0; j<m.length;j++){
+    m[j].style.border = ''
+  }
+}
+
+function changeImage(a) {
+        document.getElementById("img").src=a;       
+    }
+    </script>
+<script src="./another-script.js"></script>
+  <footer>
+    <div>
+        <p class="footer-heading">Online Store</p>
+        <a href="#" class="footer-item">Men Clothing</a><br/>
+        <a href="#" class="footer-item">Women Clothing</a><br/>
+        <a href="#" class="footer-item">Men Accessories</a><br/>
+        <a href="#" class="footer-item">Women Accessories</a>
+    </div>
+    <div>
+        <p class="footer-heading">Helpful Links</p>
+        <a href="#" class="footer-item">Home</a><br/>
+        <a href="#" class="footer-item">About</a><br/>
+        <a href="#" class="footer-item">contact</a><br/>
+    </div>
+    <div>
+        <p class="footer-heading">Partners</p>
+        <a href="#" class="footer-item">Zara</a><br/>
+        <a href="#" class="footer-item">Pantaloons</a><br/>
+        <a href="#" class="footer-item">Levis</a><br/>
+        <a href="#" class="footer-item">Ucb</a><br/>
+        <a href="#" class="footer-item">+ Many More</a>
+    </div>
+    <div>
+        <p class="footer-heading">Address</p>
+        <p href="/" class="footer-link">Building 101</p>
+        <p href="/" class="footer-link">Central Avenue</p>
+        <p href="/" class="footer-link">LA - 902722</p>
+        <p href="/" class="footer-link">United States</p>
+    </div>
+</footer>
+</body>
+</html>

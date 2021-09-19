@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./shopelane.css">
+    <title>Checkout Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <style>
+        button{
+            width: 150px;
+            height: 50px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 1em;
+            font-weight: 500;
+            background-color: #009688;
+        }
+        #checkout{
+            width: 80%;
+            margin-inline: auto;
+        }
+        #checkoutDetails{
+            display: flex;
+            box-sizing: border-box;
+        }
+        .halfsection{
+            width: 50%;
+        }
+        .bill{
+            min-width: 250%;
+            margin: 20px;
+            padding: 5%;
+            padding-left: 15px;
+            border-radius: 10px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav id=nav-bar-top>
+            <div id="menu-left">
+                <div id="web-logo"><a href="./index.html"><span class="shop-bold">SHOP</span>LANE</a></div>
+                <a href="./index.html#clothing-section" class="menu">Clothing</a>
+                <a href="./index.html#accessory-section" class="menu">Accessories</a>
+            </div>
+            <div id="search-space">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-box" name="search" placeholder="Search for Clothing and Accessories ">
+            </div>
+            <div id="menu-right">
+                <div id="cart"><p id="cart-count">0</p>
+                <a href="./checkout.html"><i class="fas fa-shopping-cart" style="font-size: larger;"></i></a></div>
+                <img src="https://ws.shoutcast.com/images/contacts/6/686a/686a361e-07b2-4e63-9e29-60a0cc314e3a/radios/a59118d4-a774-4999-ad2f-a19508773a2c/a59118d4-a774-4999-ad2f-a19508773a2c.png" alt="Profile-Photo" >
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section id="checkout">
+            <h2>Checkout</h2>
+            <div id="checkoutDetails">
+                <div id="productsAdded" class="halfsection">
+                    <h1>Order Summary.</h1>
+                    <h3>Total Items : <span id="itemsnum"></span></h3>
+                </div>
+                <div id="totalBill">
+                    <div class="bill">
+                        <h3>Total Amount</h3>
+                        <p >Amount Rs: <span id="bill">000</span></p>
+                        <button onclick="Orderplaced()">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+   
+    <script>
+
+        var totalarr = 0;
+        
+        var checkoutData=JSON.parse(localStorage.getItem('inCart'))
+                document.getElementById("itemsnum").innerHTML = checkoutData.length
+        for (i=0;i <= checkoutData.length;i++ ){
+            $.get(`${checkoutData[i].item}`, function(response){
+                var pdata = response;
+                var divsec=$("<div class='checkoutDiscrip'>").innerHTML = `<div class="checkoutDiscrip">
+                <h3>${pdata.name}</h3>
+                <p> X 1 </p>
+                <p class="checkprice">Amount Rs: ${pdata.price}</p></div>`
+                    // $("<p class='checkOutPrice'>").text(`${pdata[i].price}`).appendTo(divsec)
+                var ad=$("<div class='checkoutProductCard'>").append(divsec)
+                    $(`<img src="${pdata.preview}"" class='checkoutProductImg' width="100px"/>`).prependTo(ad);
+            $("#productsAdded").append(ad);
+            addToTotal(pdata.price)
+            })
+            }
+            function addToTotal(x){
+                totalarr += x
+                console.log(totalarr)
+                document.getElementById("bill").innerHTML = `${totalarr}`
+            }
+    console.log(totalarr)
+        function Orderplaced(){
+            remove()
+            alert("Order Placed Successfully");  
+            document.getElementById("itemsnum").innerText = checkoutData.length
+            document.getElementById("checkout").innerHTML = `<h1> Order Placed Successfully!!</h1>
+            <p>We have sent an e-mail containing order details</p>`
+        }
+        function remove(){
+            localStorage.removeItem('inCart')
+            document.getElementById("itemsnum").innerText = 0
+            document.getElementById("cart-count").innerHTML = 0
+        }
+         
+    </script>
+     <script src="./another-script.js"></script>
+   
+            <footer>
+                <div>
+                    <p class="footer-heading">Online Store</p>
+                    <a href="#" class="footer-item">Men Clothing</a><br/>
+                    <a href="#" class="footer-item">Women Clothing</a><br/>
+                    <a href="#" class="footer-item">Men Accessories</a><br/>
+                    <a href="#" class="footer-item">Women Accessories</a>
+                </div>
+                <div>
+                    <p class="footer-heading">Helpful Links</p>
+                    <a href="#" class="footer-item">Home</a><br/>
+                    <a href="#" class="footer-item">About</a><br/>
+                    <a href="#" class="footer-item">contact</a><br/>
+                </div>
+                <div>
+                    <p class="footer-heading">Partners</p>
+                    <a href="#" class="footer-item">Zara</a><br/>
+                    <a href="#" class="footer-item">Pantaloons</a><br/>
+                    <a href="#" class="footer-item">Levis</a><br/>
+                    <a href="#" class="footer-item">Ucb</a><br/>
+                    <a href="#" class="footer-item">+ Many More</a>
+                </div>
+                <div>
+                    <p class="footer-heading">Address</p>
+                    <p href="/" class="footer-link">Building 101</p>
+                    <p href="/" class="footer-link">Central Avenue</p>
+                    <p href="/" class="footer-link">LA - 902722</p>
+                    <p href="/" class="footer-link">United States</p>
+                </div>
+            </footer>
+    
+</body>
+</html>
